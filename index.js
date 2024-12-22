@@ -126,12 +126,12 @@ async function run() {
       const result = await productCollection.findOne(query);
       res.send(result);
     });
-    // create new blog
+    // create new product
     app.post("/products", async (req, res) => {
-      const newBlog = req.body;
+      const newProducts = req.body;
 
       // send data to DB
-      const result = await productCollection.insertOne(newBlog);
+      const result = await productCollection.insertOne(newProducts);
       res.send(result);
     });
     // update blog info by client response
@@ -142,10 +142,11 @@ async function run() {
       const updatedProductInfo = req.body;
       const updatedProduct = {
         $set: {
-          title: updatedProductInfo.title,
-          description: updatedProductInfo.description,
-          image: updatedProductInfo.image,
+          book_name: updatedProductInfo.book_name,
+          details: updatedProductInfo.details,
+          productimage: updatedProductInfo.productimage,
           category: updatedProductInfo.category,
+          price: updatedProductInfo.price,
           buyer_name: updatedProductInfo.buyer_name,
           buyer_image: updatedProductInfo.buyer_image,
           buyer_email: updatedProductInfo.buyer_Email,
