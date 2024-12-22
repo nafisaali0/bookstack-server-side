@@ -28,6 +28,8 @@ async function run() {
     //build Database
     const userCollection = client.db("bookStackDB").collection("users");
     const productCollection = client.db("bookStackDB").collection("products");
+    const wishListCollection = client.db("bookStackDB").collection("wishlist");
+    const cartCollection = client.db("bookStackDB").collection("cart");
 
     //api start
 
@@ -72,6 +74,8 @@ async function run() {
           // name: item.name,
           // email: item.email,
           // photo: item.photo,
+          // date: updatedBlogInfo.date,
+          // time: updatedBlogInfo.time,
         },
       };
 
@@ -135,24 +139,21 @@ async function run() {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const options = { upsert: true };
-      const updatedBlogInfo = req.body;
-      const updatedBlog = {
+      const updatedProductInfo = req.body;
+      const updatedProduct = {
         $set: {
-          title: updatedBlogInfo.title,
-          short_description: updatedBlogInfo.short_description,
-          long_description: updatedBlogInfo.long_description,
-          details_image: updatedBlogInfo.details_image,
-          date: updatedBlogInfo.date,
-          time: updatedBlogInfo.time,
-          category: updatedBlogInfo.category,
-          owner_name: updatedBlogInfo.owner_name,
-          owner_image: updatedBlogInfo.owner_image,
-          owner_Email: updatedBlogInfo.owner_Email,
+          title: updatedProductInfo.title,
+          description: updatedProductInfo.description,
+          image: updatedProductInfo.image,
+          category: updatedProductInfo.category,
+          buyer_name: updatedProductInfo.buyer_name,
+          buyer_image: updatedProductInfo.buyer_image,
+          buyer_email: updatedProductInfo.buyer_Email,
         },
       };
       const result = await productCollection.updateOne(
         filter,
-        updatedBlog,
+        updatedProduct,
         options
       );
       res.send(result);
@@ -166,6 +167,85 @@ async function run() {
       res.send(result);
     });
     //product api end
+
+    // wishtlist api start
+    app.post("/wishlist", async (req, res) => {
+      const wishProduct = req.body;
+
+      // send data to DB
+      const result = await wishListCollection.insertOne(wishProduct);
+      // finish check
+      res.send(result);
+    });
+    //read or get specific wishlist's blogs by id
+    app.get("/wishlist", async (req, res) => {
+      let query = {};
+      // condition for show blogs based on current user wishlist
+      if (req.query?.email) {
+        query = { email: req.query.email };
+      }
+      const result = await wishListCollection.find(query).toArray();
+      res.send(result);
+    });
+    //read or get specific wishlist;s blog by id
+    app.get("/wishlist/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+
+      // send data to DB
+      const result = await wishListCollection.findOne(query);
+      res.send(result);
+    });
+    // delete wishlist blogs by specific id
+    app.delete("/wishlist/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+
+      // send data to DB
+      const result = await wishListCollection.deleteOne(query);
+      res.send(result);
+    });
+    // wishtlist api end
+
+    //cart api start
+    app.post("/cart", async (req, res) => {
+      const cartProduct = req.body;
+
+      // send data to DB
+      const result = await cartCollection.insertOne(cartProduct);
+      // finish check
+      res.send(result);
+    });
+    //read or get specific wishlist's blogs by id
+    app.get("/cart", async (req, res) => {
+      let query = {};
+      // condition for show blogs based on current user wishlist
+      if (req.query?.email) {
+        query = { email: req.query.email };
+      }
+      const result = await cartCollection.find(query).toArray();
+      res.send(result);
+    });
+    //read or get specific wishlist;s blog by id
+    app.get("/cart/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+
+      // send data to DB
+      const result = await cartCollection.findOne(query);
+      res.send(result);
+    });
+    // delete wishlist blogs by specific id
+    app.delete("/cart/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+
+      // send data to DB
+      const result = await cartCollection.deleteOne(query);
+      res.send(result);
+    });
+    //cart api end
+
     //api finish
 
     // Send a ping to confirm a successful connection
