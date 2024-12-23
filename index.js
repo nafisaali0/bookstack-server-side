@@ -148,9 +148,9 @@ async function run() {
           category: updatedProductInfo.category,
           price: updatedProductInfo.price,
           discount_price: updatedProductInfo.discount_price,
-          buyer_name: updatedProductInfo.buyer_name,
-          buyer_image: updatedProductInfo.buyer_image,
-          buyer_email: updatedProductInfo.buyer_Email,
+          seller_name: updatedProductInfo.seller_name,
+          seller_image: updatedProductInfo.seller_image,
+          seller_email: updatedProductInfo.seller_email,
         },
       };
       const result = await productCollection.updateOne(
